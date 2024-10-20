@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- OSMDroid MapView -->
+
+    <!-- Checklist Overlay at the Bottom -->
+
+    <!-- Checklist overlay that can be revealed with an arrow -->
+        <!-- Placeholder for Map -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="857dp"
+        android:clickable="true"
+        android:contentDescription="@string/app_name"
+        android:enabled="true"
+        android:focusable="true">
+
+    </org.osmdroid.views.MapView>
+
+    <!-- Checklist RecyclerView, initially hidden -->
+
+    <!-- Button to toggle the checklist -->
+
+    <!-- Arrow Icon to toggle the checklist -->
+
+    <LinearLayout
+        android:id="@+id/restaurantDetailsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:id="@+id/restaurantName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant Name"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/restaurantMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu" />
+
+        <Button
+            android:id="@+id/addToChecklistButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_to_checklist" />
+    </LinearLayout>
+
+    <!-- Checklist RecyclerView, initially hidden -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/checklistRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF" />
+
+    <!-- Button to toggle the checklist -->
+    <ImageButton
+        android:id="@+id/toggleChecklistButton"
+        android:layout_width="82dp"
+        android:layout_height="72dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:contentDescription="Toggle Checklist"
+        android:src="@drawable/arrow_check_list" />
+
+    <LinearLayout
+        android:layout_width="51dp"
+        android:layout_height="154dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="33dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_width="match_parent"
+            android:layout_height="82dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:src="@drawable/plus"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <ImageView
+            android:id="@+id/icon2"
+            android:layout_width="40dp"
+            android:layout_height="54dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/camera_icon" />
+
+        <ImageView
+            android:id="@+id/icon3"
+            android:layout_width="40dp"
+            android:layout_height="57dp"
+            android:src="@drawable/travel_journal" />
+    </LinearLayout>
+
+</RelativeLayout>

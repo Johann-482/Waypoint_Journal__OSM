@@ -1,112 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+<!--The two ImageViews bellow are placeholders for Icons and Backgrounds used for dashboard-->
 
-    <!-- OSMDroid MapView -->
-
-    <!-- Checklist Overlay at the Bottom -->
-
-    <!-- Checklist overlay that can be revealed with an arrow -->
-        <!-- Placeholder for Map -->
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapContainer"
+    <ImageView
+        android:id="@+id/background_dashboard"
         android:layout_width="match_parent"
-        android:layout_height="857dp"
-        android:clickable="true"
-        android:contentDescription="@string/app_name"
-        android:enabled="true"
-        android:focusable="true">
+        android:layout_height="match_parent"
+        android:src="@drawable/background_dashboard" />
 
-    </org.osmdroid.views.MapView>
-
-    <!-- Checklist RecyclerView, initially hidden -->
-
-    <!-- Button to toggle the checklist -->
-
-    <!-- Arrow Icon to toggle the checklist -->
-
-    <LinearLayout
-        android:id="@+id/restaurantDetailsLayout"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:visibility="gone"
-        android:background="#FFFFFF">
-
-        <TextView
-            android:id="@+id/restaurantName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restaurant Name"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/restaurantMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Menu" />
-
-        <Button
-            android:id="@+id/addToChecklistButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_to_checklist" />
-    </LinearLayout>
-
-    <!-- Checklist RecyclerView, initially hidden -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/checklistRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:background="#FFFFFF" />
-
-    <!-- Button to toggle the checklist -->
-    <ImageButton
-        android:id="@+id/toggleChecklistButton"
-        android:layout_width="82dp"
-        android:layout_height="72dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:contentDescription="Toggle Checklist"
-        android:src="@drawable/arrow_check_list" />
-
-    <LinearLayout
-        android:layout_width="51dp"
-        android:layout_height="154dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="0dp"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="141dp"
+        android:layout_marginTop="42dp"
+        android:layout_marginEnd="142dp"
+        android:layout_marginBottom="561dp"
+        android:src="@drawable/app_icon" />
 
-        <ImageView
-            android:id="@+id/icon1"
-            android:layout_width="match_parent"
-            android:layout_height="82dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:src="@drawable/plus" />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="523dp"
+        android:text="Waypoint Journal"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/icon2"
-            android:layout_width="40dp"
-            android:layout_height="54dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/camera_icon" />
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="94dp"
+        android:layout_height="73dp"
+        android:layout_alignTop="@+id/map_button"
+        android:layout_alignEnd="@+id/map_button"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="247dp"
+        android:layout_marginEnd="51dp"
+        android:layout_marginBottom="149dp"
+        android:elevation="@android:dimen/app_icon_size"
+        android:text="Check the map and see your favorite stores"
+        android:textAlignment="center" />
 
-        <ImageView
-            android:id="@+id/icon3"
-            android:layout_width="40dp"
-            android:layout_height="57dp"
-            android:src="@drawable/travel_journal" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="104dp"
+        android:layout_height="66dp"
+        android:layout_alignStart="@+id/journal_button"
+        android:layout_alignTop="@+id/journal_button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="249dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="152dp"
+        android:elevation="@android:dimen/app_icon_size"
+        android:text="View your Journal and see your previous adventures"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/map_button"
+        android:layout_width="206dp"
+        android:layout_height="468dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="0dp"
+        android:text="Check Map" />
+
+    <Button
+        android:id="@+id/journal_button"
+        android:layout_width="201dp"
+        android:layout_height="467dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="0dp"
+        android:text="Check Journal" />
 
 </RelativeLayout>
