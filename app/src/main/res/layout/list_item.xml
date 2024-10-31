@@ -1,58 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="4dp"
-    android:layout_margin="8dp"
-    android:padding="8dp">
+    android:padding="16dp"
+    android:gravity="center_vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
+        android:orientation="vertical">
 
-        <!-- Left side: Food name and category -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <!-- First TextView -->
+        <TextView
+            android:id="@+id/restaurantNameList"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="8">
+            android:text="Category Name"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/foodName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Food Name"
-                android:textSize="18sp"
-                android:textColor="#000000"
-                android:paddingBottom="4dp" />
-
-            <TextView
-                android:id="@+id/foodCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Food"
-                android:textSize="14sp"
-                android:textColor="#808080" />
-        </LinearLayout>
-
-        <!-- Right side: arrow -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <!-- Second TextView -->
+        <TextView
+            android:id="@+id/restaurantMenuList"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:paddingEnd="16dp">
-
-            <ImageView
-                android:id="@+id/heartIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/right_arrow"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
+            android:text="Description"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+    <!-- Button Placeholder -->
+    <Button
+        android:id="@+id/addToListButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add to List"
+        android:backgroundTint="@android:color/transparent" />
+
+    <!-- Info Button -->
+    <ImageView
+        android:id="@+id/infoButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/information"
+        android:contentDescription="Information"
+        app:tint="@android:color/black" />
+</LinearLayout>

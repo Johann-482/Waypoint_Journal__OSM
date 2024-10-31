@@ -31,10 +31,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="gone"
-        android:background="#FFFFFF">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/restaurantName"
@@ -62,9 +62,9 @@
         android:id="@+id/checklistRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF" />
+        android:background="#FFFFFF"
+        android:visibility="gone" />
 
     <!-- Button to toggle the checklist -->
     <ImageButton
