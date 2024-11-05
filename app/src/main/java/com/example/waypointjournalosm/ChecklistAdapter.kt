@@ -4,45 +4,50 @@ package com.example.waypointjournalosm
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.waypointjournalosm.databinding.ChecklistItemBinding
 
-class ChecklistAdapter : RecyclerView.Adapter<ChecklistAdapter.ChecklistViewHolder>() {
+class ChecklistAdapter(
+    private val restaurantItem: RestaurantItem
+) : RecyclerView.Adapter<ChecklistAdapter.ViewHolder>() {
 
-    private val restaurantList = mutableListOf<String>()
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val restaurantNameTextView: TextView =
+            view.findViewById(R.id.restaurantNameChecklist)
+        private val checkbox: CheckBox = view.findViewById(R.id.checkbox)
 
-    fun addRestaurantToChecklist(restaurantName: String) {
-        if (!restaurantList.contains(restaurantName)) {
-            restaurantList.add(restaurantName)
-            notifyDataSetChanged()
+        // Bind data to views
+        fun bind(restaurantName: String) {
+            restaurantNameTextView.text = restaurantName
+            checkbox.isChecked = false
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChecklistViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         //Shows the layout of the RecyclerView
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.checklist_item, parent, false)
-        return ChecklistViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ChecklistViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //Makes the RecyclerView only show limited CardViews
         //As the user scrolls up, old CardViews from above will be stored
         //The new CardViews will be shown from below
-        holder.bind(restaurantList[position])
+        restaurantItem.checklist.value?.get(position)?.let { restaurantName ->
+            holder.bind(restaurantName)
+        } // Bind restaurant name at position
     }
 
-    override fun getItemCount(): Int = restaurantList.size
+    override fun getItemCount(): Int = restaurantItem.checklist.value?.size ?: 0
         //To let the system know how many items needed to be displayed
 
-    class ChecklistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        //grabbing the views created from the layout file
-        private val restaurantNameTextView: TextView = itemView.findViewById(R.id.restaurantName)
-        private val checkbox: CheckBox = itemView.findViewById(R.id.checkbox)
-
-        fun bind(restaurantName: String) {
-            restaurantNameTextView.text = restaurantName
-        }
+    // Update the entire checklist when there's a change
+    fun updateChecklist() {
+        notifyDataSetChanged()  // Rebind the data on each change
     }
+
 }

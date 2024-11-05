@@ -17,6 +17,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import android.widget.ImageView
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.waypointjournalosm.RestaurantItem
 
 class MapActivity : AppCompatActivity() {
 
@@ -25,9 +29,12 @@ class MapActivity : AppCompatActivity() {
     private lateinit var restaurantDetailsLayout: View
     private lateinit var restaurantNameTextView: TextView
     private lateinit var restaurantMenuTextView: TextView
-    private lateinit var addToChecklistButton: Button
     private lateinit var toggleChecklistButton: ImageButton
-    private val checklistAdapter = ChecklistAdapter()
+    private lateinit var addToChecklistButton: Button
+    private lateinit var checklistAdapter: ChecklistAdapter
+    private lateinit var restaurantItem: RestaurantItem
+    private var selectedRestaurants = mutableListOf<RestaurantItem>()
+    private var isComparisonMode = false // Flag to track if we're in comparison mode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +72,6 @@ class MapActivity : AppCompatActivity() {
         marker.title = "Burnham Park"
         mapContainer.overlays.add(marker)
 
-        // Add markers to the map
-        addMarkersToMap()
 
         // Set click listeners for the icons
         findViewById<ImageView>(R.id.search_icon).setOnClickListener {
@@ -84,14 +89,27 @@ class MapActivity : AppCompatActivity() {
             startActivity(intent)
         }
          */
-        checklistOverlay = findViewById(R.id.checklistRecyclerView)
+        restaurantItem = ViewModelProvider(this)[RestaurantItem::class.java]
 
+        // Initialize checklist RecyclerView and adapter
+        checklistOverlay = findViewById(R.id.checklistRecyclerView)
+        checklistAdapter = ChecklistAdapter(restaurantItem)
         checklistOverlay.layoutManager = LinearLayoutManager(this)
         checklistOverlay.adapter = checklistAdapter
 
+        // Observe checklist changes
+        restaurantItem.checklist.observe(this) {
+            checklistAdapter.updateChecklist()  // Notify adapter on checklist change
+        }
 
+        restaurantItem.restaurantList.observe(this, Observer { restaurantList ->
+            updateMapMarkers(restaurantList)
+        })
+
+        // Initialize checklist overlay and toggle button
         toggleChecklistButton = findViewById(R.id.toggleChecklistButton)
-        checklistOverlay.visibility = View.GONE
+        checklistOverlay.visibility = View.GONE // Start with checklist hidden
+
         toggleChecklistButton.setOnClickListener {
             if (checklistOverlay.visibility == View.GONE) {
                 checklistOverlay.visibility = View.VISIBLE
@@ -99,11 +117,14 @@ class MapActivity : AppCompatActivity() {
                 checklistOverlay.visibility = View.GONE
             }
         }
-        // Hide restaurant details when user adds the restaurant to the checklist
         addToChecklistButton = findViewById(R.id.addToChecklistButton)
         addToChecklistButton.setOnClickListener {
+            // Get the current restaurant’s name and add it to the checklist
             val restaurantName = restaurantNameTextView.text.toString()
-            checklistAdapter.addRestaurantToChecklist(restaurantName)
+            if (restaurantName.isNotEmpty()) {
+                restaurantItem.addRestaurantToChecklist(restaurantName)
+            }
+            // Hide the details layout after adding
             restaurantDetailsLayout.visibility = View.GONE
         }
 
@@ -114,36 +135,33 @@ class MapActivity : AppCompatActivity() {
 
 
     }
-    private fun addMarkersToMap() {
-        val marker1 = Marker(mapContainer)
-        marker1.position = GeoPoint(16.411119, 120.595190) // Example location
-        marker1.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker1.title = "Restaurant A"
-        marker1.snippet = "Pizza, Pasta, Salad"
-        marker1.setOnMarkerClickListener { marker, _ ->
-            showRestaurantDetails(marker)
-            true
+    private fun updateMapMarkers(restaurantList: List<RestaurantData>) {
+        // Clear existing markers if needed
+        mapContainer.overlays.clear()
+
+        // Loop through restaurantList to create and add markers
+        restaurantList.forEach { restaurant ->
+            val geoPoint = GeoPoint(restaurant.latitude, restaurant.longitude)
+            val marker = Marker(mapContainer)
+            marker.position = geoPoint
+            marker.title = restaurant.name
+            marker.snippet = restaurant.rMenu
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+            // Show restaurant details and add-to-checklist button on marker tap
+            marker.setOnMarkerClickListener { _, _ ->
+                restaurantNameTextView.text = restaurant.name
+                restaurantMenuTextView.text = restaurant.rMenu
+                restaurantDetailsLayout.visibility = View.VISIBLE
+
+                true // Return true to consume the tap event
+            }
+
+            // Add marker to the map
+            mapContainer.overlays.add(marker)
         }
-
-        val marker2 = Marker(mapContainer)
-        marker2.position = GeoPoint(16.410719, 120.595100) // Example location
-        marker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        marker2.title = "Restaurant B"
-        marker2.snippet = "Sushi, Ramen, Tempura"
-        marker2.setOnMarkerClickListener { marker, _ ->
-            showRestaurantDetails(marker)
-            true
-        }
-
-        mapContainer.overlays.add(marker1)
-        mapContainer.overlays.add(marker2)
-    }
-
-    private fun showRestaurantDetails(marker: Marker) {
-        // Show the restaurant's details in the top layout
-        restaurantNameTextView.text = marker.title
-        restaurantMenuTextView.text = marker.snippet
-        restaurantDetailsLayout.visibility = View.VISIBLE
+        // Refresh the map view to display the markers
+        mapContainer.invalidate()
     }
 
     override fun onResume() {
