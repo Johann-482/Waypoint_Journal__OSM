@@ -1,5 +1,6 @@
 package com.example.waypointjournalosm
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.View
 import android.os.Bundle
@@ -17,6 +18,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,8 +36,23 @@ class MapActivity : AppCompatActivity() {
     private lateinit var addToChecklistButton: Button
     private lateinit var checklistAdapter: ChecklistAdapter
     private lateinit var restaurantItem: RestaurantItem
-    private var selectedRestaurants = mutableListOf<RestaurantItem>()
-    private var isComparisonMode = false // Flag to track if we're in comparison mode
+    private lateinit var compareButton: Button
+    private lateinit var restaurant1Layout: View
+    private lateinit var restaurant2Layout: View
+    private lateinit var restaurant1Name: TextView
+    private lateinit var restaurant1Menu: TextView
+    private lateinit var restaurant1Ingredients: TextView
+    private lateinit var restaurant1Reviews: TextView
+    private lateinit var restaurant2Name: TextView
+    private lateinit var restaurant2Menu: TextView
+    private lateinit var restaurant2Ingredients: TextView
+    private lateinit var restaurant2Reviews: TextView
+    private lateinit var chooseRestaurant1Button: Button
+    private lateinit var chooseRestaurant2Button: Button
+
+    private var selectedRestaurant1: RestaurantItem? = null
+    private var selectedRestaurant2: RestaurantItem? = null
+    private var isComparisonModeEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,27 +150,113 @@ class MapActivity : AppCompatActivity() {
         restaurantNameTextView = findViewById(R.id.restaurantName)
         restaurantMenuTextView = findViewById(R.id.restaurantMenu)
 
+        compareButton = findViewById(R.id.compareRestaurantsButton)
+        restaurant1Layout = findViewById(R.id.restaurant1Layout)
+        restaurant2Layout = findViewById(R.id.restaurant2Layout)
+        restaurant1Name = findViewById(R.id.restaurant1Name)
+        restaurant1Menu = findViewById(R.id.restaurant1Menu)
+        restaurant1Ingredients = findViewById(R.id.restaurant1Ingredients)
+        restaurant1Reviews = findViewById(R.id.restaurant1Reviews)
+        restaurant2Name = findViewById(R.id.restaurant2Name)
+        restaurant2Menu = findViewById(R.id.restaurant2Menu)
+        restaurant2Ingredients = findViewById(R.id.restaurant2Ingredients)
+        restaurant2Reviews = findViewById(R.id.restaurant2Reviews)
+        chooseRestaurant1Button = findViewById(R.id.chooseRestaurant1Button)
+        chooseRestaurant2Button = findViewById(R.id.chooseRestaurant2Button)
 
+        // Set up observers for Restaurant 1 details
+        selectedRestaurant1?.name?.observe(this, Observer { name ->
+            restaurant1Name.text = name ?: "N/A"
+        })
+        selectedRestaurant1?.rMenu?.observe(this, Observer { menu ->
+            restaurant1Menu.text = menu ?: "N/A"
+        })
+        selectedRestaurant1?.mainIngredients?.observe(this, Observer { ingredients ->
+            restaurant1Ingredients.text = ingredients ?: "N/A"
+        })
+        selectedRestaurant1?.reviews?.observe(this, Observer { reviews ->
+            restaurant1Reviews.text = reviews ?: "N/A"
+        })
+
+        // Set up observers for Restaurant 2 details
+        selectedRestaurant2?.name?.observe(this, Observer { name ->
+            restaurant2Name.text = name ?: "N/A"
+        })
+        selectedRestaurant2?.rMenu?.observe(this, Observer { menu ->
+            restaurant2Menu.text = menu ?: "N/A"
+        })
+        selectedRestaurant2?.mainIngredients?.observe(this, Observer { ingredients ->
+            restaurant2Ingredients.text = ingredients ?: "N/A"
+        })
+        selectedRestaurant2?.reviews?.observe(this, Observer { reviews ->
+            restaurant2Reviews.text = reviews ?: "N/A"
+        })
+
+        compareButton.setOnClickListener {
+            isComparisonModeEnabled = true
+            selectedRestaurant1 = null
+            selectedRestaurant2 = null
+            Toast.makeText(this, "Select two restaurants to compare", Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<Button>(R.id.chooseRestaurant1Button).setOnClickListener {
+            selectedRestaurant1?.let { addRestaurantToChecklist(it.name.value ?: "") }
+            resetComparison()
+        }
+
+        findViewById<Button>(R.id.chooseRestaurant2Button).setOnClickListener {
+            selectedRestaurant2?.let { addRestaurantToChecklist(it.name.value ?: "") }
+            resetComparison()
+        }
 
     }
+    private fun selectRestaurant(restaurantData: RestaurantData) {
+        if (!isComparisonModeEnabled) return // Exit if comparison mode is not enabled
+
+        // Convert RestaurantData to RestaurantItem to use LiveData properties
+        val restaurantItem = RestaurantItem().apply {
+            name.value = restaurantData.name
+            rMenu.value = restaurantData.rMenu
+            mainIngredients.value = restaurantData.mainIngredients
+            reviews.value = restaurantData.reviews
+        }
+
+        if (selectedRestaurant1 == null) {
+            selectedRestaurant1 = restaurantItem
+        } else if (selectedRestaurant2 == null) {
+            selectedRestaurant2 = restaurantItem
+            isComparisonModeEnabled = false // Exit comparison mode after two selections
+            displayComparison()
+        }
+    }
+
     private fun updateMapMarkers(restaurantList: List<RestaurantData>) {
         // Clear existing markers if needed
         mapContainer.overlays.clear()
 
         // Loop through restaurantList to create and add markers
-        restaurantList.forEach { restaurant ->
-            val geoPoint = GeoPoint(restaurant.latitude, restaurant.longitude)
+        restaurantList.forEach { restaurantData ->
+            val geoPoint = GeoPoint(restaurantData.latitude, restaurantData.longitude)
             val marker = Marker(mapContainer)
             marker.position = geoPoint
-            marker.title = restaurant.name
-            marker.snippet = restaurant.rMenu
+            marker.title = restaurantData.name
+            marker.snippet = restaurantData.rMenu
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+            // Convert RestaurantData to RestaurantItem
+            val restaurantItem = RestaurantItem().apply {
+                name.value = restaurantData.name
+                rMenu.value = restaurantData.rMenu
+                mainIngredients.value = restaurantData.mainIngredients
+                reviews.value = restaurantData.reviews
+            }
 
             // Show restaurant details and add-to-checklist button on marker tap
             marker.setOnMarkerClickListener { _, _ ->
-                restaurantNameTextView.text = restaurant.name
-                restaurantMenuTextView.text = restaurant.rMenu
+                restaurantNameTextView.text = restaurantData.name
+                restaurantMenuTextView.text = restaurantData.rMenu
                 restaurantDetailsLayout.visibility = View.VISIBLE
+                selectRestaurant(restaurantData)
 
                 true // Return true to consume the tap event
             }
@@ -162,6 +266,38 @@ class MapActivity : AppCompatActivity() {
         }
         // Refresh the map view to display the markers
         mapContainer.invalidate()
+    }
+
+    private fun displayComparison() {
+        // Make sure the comparison layouts are visible
+        findViewById<View>(R.id.restaurant1Layout).visibility = View.VISIBLE
+        findViewById<View>(R.id.restaurant2Layout).visibility = View.VISIBLE
+
+        // Populate Restaurant 1 layout
+        findViewById<TextView>(R.id.restaurant1Name).text = selectedRestaurant1?.name?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant1Menu).text = selectedRestaurant1?.rMenu?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant1Ingredients).text = selectedRestaurant1?.mainIngredients?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant1Reviews).text = selectedRestaurant1?.reviews?.value ?: "N/A"
+
+        // Populate Restaurant 2 layout
+        findViewById<TextView>(R.id.restaurant2Name).text = selectedRestaurant2?.name?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant2Menu).text = selectedRestaurant2?.rMenu?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant2Ingredients).text = selectedRestaurant2?.mainIngredients?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant2Reviews).text = selectedRestaurant2?.reviews?.value ?: "N/A"
+    }
+
+    private fun addRestaurantToChecklist(restaurantName: String) {
+        // Add to checklist in RestaurantItem
+        restaurantItem.checklist.value?.add(restaurantName)
+        checklistAdapter.updateChecklist()
+    }
+
+    private fun resetComparison() {
+        findViewById<View>(R.id.restaurant1Layout).visibility = View.GONE
+        findViewById<View>(R.id.restaurant2Layout).visibility = View.GONE
+        restaurantDetailsLayout.visibility = View.GONE
+        selectedRestaurant1 = null
+        selectedRestaurant2 = null
     }
 
     override fun onResume() {

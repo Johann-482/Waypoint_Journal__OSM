@@ -87,6 +87,102 @@
         android:contentDescription="Toggle Checklist"
         android:src="@drawable/arrow_check_list" />
 
+    <!-- Restaurant 1 Comparison Layout -->
+    <LinearLayout
+        android:id="@+id/restaurant1Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <!-- Restaurant 1 Details -->
+        <TextView
+            android:id="@+id/restaurant1Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant 1 Name"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/restaurant1Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu: ..." />
+
+        <TextView
+            android:id="@+id/restaurant1Ingredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Main Ingredients: ..." />
+
+        <TextView
+            android:id="@+id/restaurant1Reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reviews: ..." />
+
+        <Button
+            android:id="@+id/chooseRestaurant1Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose this restaurant" />
+    </LinearLayout>
+
+    <!-- Restaurant 2 Comparison Layout -->
+    <LinearLayout
+        android:id="@+id/restaurant2Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/restaurant1Layout"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <!-- Restaurant 2 Details -->
+        <TextView
+            android:id="@+id/restaurant2Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant 2 Name"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/restaurant2Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu: ..." />
+
+        <TextView
+            android:id="@+id/restaurant2Ingredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Main Ingredients: ..." />
+
+        <TextView
+            android:id="@+id/restaurant2Reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reviews: ..." />
+
+        <Button
+            android:id="@+id/chooseRestaurant2Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose this restaurant" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="51dp"
         android:layout_height="154dp"
