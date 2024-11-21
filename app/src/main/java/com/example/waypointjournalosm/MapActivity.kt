@@ -18,12 +18,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.waypointjournalosm.RestaurantItem
 
 class MapActivity : AppCompatActivity() {
 
@@ -53,6 +50,7 @@ class MapActivity : AppCompatActivity() {
     private var selectedRestaurant1: RestaurantItem? = null
     private var selectedRestaurant2: RestaurantItem? = null
     private var isComparisonModeEnabled = false
+    private var selectedRestaurantMenu: RestaurantData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,12 +167,12 @@ class MapActivity : AppCompatActivity() {
             restaurant1Name.text = name ?: "N/A"
         })
         selectedRestaurant1?.rMenu?.observe(this, Observer { menu ->
-            restaurant1Menu.text = menu ?: "N/A"
+            restaurant1Menu.text = menu?.joinToString(", ") ?: "N/A"
         })
-        selectedRestaurant1?.mainIngredients?.observe(this, Observer { ingredients ->
-            restaurant1Ingredients.text = ingredients ?: "N/A"
+        selectedRestaurant1?.restaurantRating?.observe(this, Observer { ratings ->
+            restaurant1Ingredients.text = (ratings ?: "N/A") as CharSequence?
         })
-        selectedRestaurant1?.reviews?.observe(this, Observer { reviews ->
+        selectedRestaurant1?.restaurantReviews?.observe(this, Observer { reviews ->
             restaurant1Reviews.text = reviews ?: "N/A"
         })
 
@@ -183,12 +181,12 @@ class MapActivity : AppCompatActivity() {
             restaurant2Name.text = name ?: "N/A"
         })
         selectedRestaurant2?.rMenu?.observe(this, Observer { menu ->
-            restaurant2Menu.text = menu ?: "N/A"
+            restaurant2Menu.text = menu?.joinToString(", ") ?: "N/A"
         })
-        selectedRestaurant2?.mainIngredients?.observe(this, Observer { ingredients ->
-            restaurant2Ingredients.text = ingredients ?: "N/A"
+        selectedRestaurant2?.restaurantRating?.observe(this, Observer { ratings ->
+            restaurant2Ingredients.text = (ratings ?: "N/A") as CharSequence?
         })
-        selectedRestaurant2?.reviews?.observe(this, Observer { reviews ->
+        selectedRestaurant2?.restaurantReviews?.observe(this, Observer { reviews ->
             restaurant2Reviews.text = reviews ?: "N/A"
         })
 
@@ -209,6 +207,25 @@ class MapActivity : AppCompatActivity() {
             resetComparison()
         }
 
+        findViewById<Button>(R.id.compareItemsButton).setOnClickListener {
+            selectedRestaurantMenu?.let { restaurant ->
+                val intent = Intent(this, CompareMenuItemActivity::class.java).apply {
+                    putExtra("SELECTED_RESTAURANT_NAME", restaurant.name)
+                    putStringArrayListExtra("SELECTED_RESTAURANT_MENU", ArrayList(restaurant.rMenu))
+                    putStringArrayListExtra("SELECTED_MENU_INGREDIENTS1", ArrayList(restaurant.ingredients1))
+                    putStringArrayListExtra("SELECTED_MENU_INGREDIENTS2", ArrayList(restaurant.ingredients2))
+                    putStringArrayListExtra("SELECTED_MENU_INGREDIENTS3", ArrayList(restaurant.ingredients3))
+                    putExtra("SELECTED_MENU_RATING1", restaurant.menuItemRating1)
+                    putExtra("SELECTED_MENU_RATING2", restaurant.menuItemRating2)
+                    putExtra("SELECTED_MENU_RATING3", restaurant.menuItemRating3)
+                    putExtra("SELECTED_MENU_REVIEWS1", restaurant.menuItemReviews1)
+                    putExtra("SELECTED_MENU_REVIEWS2", restaurant.menuItemReviews2)
+                    putExtra("SELECTED_MENU_REVIEWS3", restaurant.menuItemReviews3)
+                }
+                startActivity(intent)
+            }
+        }
+
     }
     private fun selectRestaurant(restaurantData: RestaurantData) {
         if (!isComparisonModeEnabled) return // Exit if comparison mode is not enabled
@@ -217,8 +234,8 @@ class MapActivity : AppCompatActivity() {
         val restaurantItem = RestaurantItem().apply {
             name.value = restaurantData.name
             rMenu.value = restaurantData.rMenu
-            mainIngredients.value = restaurantData.mainIngredients
-            reviews.value = restaurantData.reviews
+            restaurantRating.value = restaurantData.restaurantRating
+            restaurantReviews.value = restaurantData.restaurantReviews
         }
 
         if (selectedRestaurant1 == null) {
@@ -240,23 +257,17 @@ class MapActivity : AppCompatActivity() {
             val marker = Marker(mapContainer)
             marker.position = geoPoint
             marker.title = restaurantData.name
-            marker.snippet = restaurantData.rMenu
+            marker.snippet = restaurantData.rMenu.joinToString(", ")
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-
-            // Convert RestaurantData to RestaurantItem
-            val restaurantItem = RestaurantItem().apply {
-                name.value = restaurantData.name
-                rMenu.value = restaurantData.rMenu
-                mainIngredients.value = restaurantData.mainIngredients
-                reviews.value = restaurantData.reviews
-            }
 
             // Show restaurant details and add-to-checklist button on marker tap
             marker.setOnMarkerClickListener { _, _ ->
                 restaurantNameTextView.text = restaurantData.name
-                restaurantMenuTextView.text = restaurantData.rMenu
+                restaurantMenuTextView.text = restaurantData.rMenu.joinToString(", ")
                 restaurantDetailsLayout.visibility = View.VISIBLE
                 selectRestaurant(restaurantData)
+
+                selectedRestaurantMenu = restaurantData
 
                 true // Return true to consume the tap event
             }
@@ -268,6 +279,7 @@ class MapActivity : AppCompatActivity() {
         mapContainer.invalidate()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayComparison() {
         // Make sure the comparison layouts are visible
         findViewById<View>(R.id.restaurant1Layout).visibility = View.VISIBLE
@@ -275,15 +287,15 @@ class MapActivity : AppCompatActivity() {
 
         // Populate Restaurant 1 layout
         findViewById<TextView>(R.id.restaurant1Name).text = selectedRestaurant1?.name?.value ?: "N/A"
-        findViewById<TextView>(R.id.restaurant1Menu).text = selectedRestaurant1?.rMenu?.value ?: "N/A"
-        findViewById<TextView>(R.id.restaurant1Ingredients).text = selectedRestaurant1?.mainIngredients?.value ?: "N/A"
-        findViewById<TextView>(R.id.restaurant1Reviews).text = selectedRestaurant1?.reviews?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant1Menu).text = "Menu: " + (selectedRestaurant1?.rMenu?.value ?.joinToString(", ") ?: "N/A")
+        findViewById<TextView>(R.id.restaurant1Ingredients).text = "Rating: " + (selectedRestaurant1?.restaurantRating?.value ?: "N/A")
+        findViewById<TextView>(R.id.restaurant1Reviews).text = selectedRestaurant1?.restaurantReviews?.value ?: "N/A"
 
         // Populate Restaurant 2 layout
         findViewById<TextView>(R.id.restaurant2Name).text = selectedRestaurant2?.name?.value ?: "N/A"
-        findViewById<TextView>(R.id.restaurant2Menu).text = selectedRestaurant2?.rMenu?.value ?: "N/A"
-        findViewById<TextView>(R.id.restaurant2Ingredients).text = selectedRestaurant2?.mainIngredients?.value ?: "N/A"
-        findViewById<TextView>(R.id.restaurant2Reviews).text = selectedRestaurant2?.reviews?.value ?: "N/A"
+        findViewById<TextView>(R.id.restaurant2Menu).text = "Menu: " + (selectedRestaurant2?.rMenu?.value ?.joinToString(", ") ?: "N/A")
+        findViewById<TextView>(R.id.restaurant2Ingredients).text = "Rating: " + (selectedRestaurant2?.restaurantRating?.value ?: "N/A")
+        findViewById<TextView>(R.id.restaurant2Reviews).text = selectedRestaurant2?.restaurantReviews?.value ?: "N/A"
     }
 
     private fun addRestaurantToChecklist(restaurantName: String) {

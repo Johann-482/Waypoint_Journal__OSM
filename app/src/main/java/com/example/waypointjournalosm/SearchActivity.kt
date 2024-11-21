@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : androidx.activity.ComponentActivity() {
     private val restaurantItem: RestaurantItem by viewModels()
-    private lateinit var listAdapter: CategoryAdapter
+    private lateinit var listAdapter: ListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_place)
 
-        listAdapter = CategoryAdapter(
+        listAdapter = ListAdapter(
             onAddClick = { item ->
                 Toast.makeText(this, "Add ${item.name} to List", Toast.LENGTH_SHORT).show()
             },

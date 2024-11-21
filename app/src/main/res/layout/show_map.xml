@@ -62,8 +62,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
             android:text="Compare Restaurants" />
+
+        <Button
+            android:id="@+id/compareItemsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:minHeight="48dp"
+            android:text="Compare Menu Item" />
     </LinearLayout>
 
     <!-- Checklist RecyclerView, initially hidden -->
@@ -83,8 +92,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         android:contentDescription="Toggle Checklist"
+        android:scaleType="fitCenter"
         android:src="@drawable/arrow_check_list" />
 
     <!-- Restaurant 1 Comparison Layout -->
