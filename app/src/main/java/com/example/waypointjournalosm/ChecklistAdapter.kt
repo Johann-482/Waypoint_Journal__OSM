@@ -15,7 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 
 class ChecklistAdapter(
     private val context: Context,
-    private val checklist: List<ItineraryItem> // Directly pass the checklist from Activity/Fragment){}
+    private val checklist: MutableList<ItineraryItem> // Directly pass the checklist from Activity/Fragment){}
 ) : RecyclerView.Adapter<ChecklistAdapter.ViewHolder>() {
 
     private var checklistData: MutableList<ItineraryItem> = checklist.toMutableList() // Convert to MutableList
@@ -33,14 +33,14 @@ class ChecklistAdapter(
 
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    Toast.makeText(itemView.context, "${item.restaurantName} selected!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(itemView.context, "${item.restaurantName} selected! Item will remove in 20 secs...", Toast.LENGTH_SHORT).show()
 
                     // Trigger delay of 30 seconds and then delete the item
                     Handler().postDelayed({
                         // Perform the deletion after 30 seconds
                         deleteItemFromFirebase(item)
                         // Remove from the local list
-                        checklistData.remove(item)
+                        checklist.remove(item)
                         // Notify the adapter to remove the item from RecyclerView
                         notifyDataSetChanged()
                     }, 20000)  // 30 seconds delay
@@ -57,12 +57,12 @@ class ChecklistAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = checklistData[position]
+        val item = checklist[position]
         holder.bind(item)  // Bind data
 
     }
 
-    override fun getItemCount(): Int = checklistData.size
+    override fun getItemCount(): Int = checklist.size
 
     private fun deleteItemFromFirebase(item: ItineraryItem) {
         val firebaseDatabase = FirebaseDatabase.getInstance().getReference("Itinerary") // Replace "/" with the correct root path if needed.

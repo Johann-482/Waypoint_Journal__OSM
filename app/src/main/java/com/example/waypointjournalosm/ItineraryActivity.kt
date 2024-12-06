@@ -47,6 +47,7 @@ class ItineraryActivity : AppCompatActivity() {
                         Log.d("FirebaseData", "Fetched Item: Restaurant: $restaurantName, Meal Type: $mealType")
                     }
                 }
+                itineraryAdapter.notifyDataSetChanged() // Notify the adapter that data has changed
             }
         }.addOnFailureListener {
             // Handle any errors

@@ -8,7 +8,7 @@
     <!-- Top Restaurant Section -->
     <LinearLayout
         android:id="@+id/topReviewRestaurant"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +56,7 @@
     <!-- Bottom Restaurant Section -->
     <LinearLayout
         android:id="@+id/bottomReviewRestaurant"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/topReviewRestaurant"
