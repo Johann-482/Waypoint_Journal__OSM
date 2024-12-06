@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/topRestaurant"
+        android:layout_width="match_parent"
+        android:layout_height="459dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="431dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/topRestaurantName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="RestaurantName"
+            android:textSize="23dp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/topRestaurantMenuName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="RestaurantMenuName"
+            android:textSize="20dp"/>
+
+        <FrameLayout
+            android:layout_width="234dp"
+            android:layout_height="189dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/border"
+            android:layout_marginBottom="2dp">
+
+            <TextView
+                android:id="@+id/topRestaurantMenuIngredientsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Ingredients"
+                android:textSize="20dp"
+                android:gravity="center_horizontal"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/topRestaurantMenuIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="TextView"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/topRestaurantMenuPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Price"
+                android:textSize="16dp"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"/>
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/topOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Itinerary" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="429dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topRestaurant">
+
+        <TextView
+            android:id="@+id/bottomRestaurantName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="RestaurantName"
+            android:textSize="23dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/bottomRestaurantMenuName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="RestaurantMenuName"
+            android:textSize="20dp"/>
+
+        <FrameLayout
+            android:layout_width="234dp"
+            android:layout_height="189dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/border"
+            android:layout_marginBottom="2dp">
+
+            <TextView
+                android:id="@+id/bottomRestaurantMenuIngredientsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Ingredients"
+                android:textSize="20dp"
+                android:gravity="center_horizontal"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/bottomRestaurantMenuIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="TextView"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/bottomRestaurantMenuPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Price"
+                android:textSize="16dp"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"/>
+        </FrameLayout>
+        <Button
+            android:id="@+id/bottomOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Itinerary" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

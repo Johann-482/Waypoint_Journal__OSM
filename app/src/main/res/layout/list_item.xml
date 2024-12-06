@@ -39,16 +39,7 @@
         android:id="@+id/addToListButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add to List"
-        android:backgroundTint="@android:color/transparent" />
+        android:text="Add to Itinerary" />
 
     <!-- Info Button -->
-    <ImageView
-        android:id="@+id/infoButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/information"
-        android:contentDescription="Information"
-        app:tint="@android:color/black" />
 </LinearLayout>

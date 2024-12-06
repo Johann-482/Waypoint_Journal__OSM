@@ -6,95 +6,78 @@
 
     <!-- First LinearLayout: Chosen Item Menu -->
     <LinearLayout
-        android:id="@+id/firstLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/titleLinearLayout"
+        android:layout_width="391dp"
+        android:layout_height="31dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.33"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Chosen Item Information (Menu Name, Rating, Reviews) -->
         <TextView
-            android:id="@+id/restaurantName1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restaurant Name"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:layout_width="402dp"
+            android:layout_height="match_parent"
+            android:text="Choose Restaurants to Compare"
+            android:textSize="20sp"
+            android:textStyle="bold">
 
-        <TextView
-            android:id="@+id/restaurantItemIngredients1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingredients:"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
+        </TextView>
 
-        <TextView
-            android:id="@+id/restaurantMenuRating1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rating: 4.5"
-            android:textSize="14sp"/>
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/restaurantItemReview1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Review: Great taste!"
-            android:textSize="14sp"/>
+    <LinearLayout
+        android:id="@+id/firstLinearLayout"
+        android:layout_width="400dp"
+        android:layout_height="119dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secondLinearLayout">
 
-        <TextView
-            android:id="@+id/menuItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:text="Menu:"
-            android:textSize="25sp"
-            android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/menuDropdown"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="272dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="0dp"
+            android:hint="@string/select_menu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
+            <AutoCompleteTextView
+                android:id="@+id/autoing_complete_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
+                android:completionThreshold="1"
+                android:inputType="none"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="132dp" />
 
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Compare" />
 
     </LinearLayout>
 
     <!-- Second LinearLayout: RecyclerView for Restaurants that have the chosen item -->
     <LinearLayout
         android:id="@+id/secondLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="408dp"
+        android:layout_height="399dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/firstLinearLayout">
+        app:layout_constraintTop_toBottomOf="@id/thirdLinearLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/compareRestaurantRecyclerView"
@@ -105,52 +88,27 @@
     <!-- Third LinearLayout: Bottom section to display selected restaurant's item -->
     <LinearLayout
         android:id="@+id/thirdLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="409dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="1dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/secondLinearLayout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.33">
+        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleLinearLayout">
 
         <!-- Chosen Item Information (Restaurant, MenuItem, Ingredients, Rating, Reviews) -->
-        <TextView
-            android:id="@+id/restaurantName2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restaurant Name"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/restaurantMenuItem2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Menu Item"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/restaurantItemIngredients2"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/editTextText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ingredients:"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"/>
+            android:ems="10"
+            android:hint="Search a menu Item"
+            android:inputType="text" />
 
-        <TextView
-            android:id="@+id/restaurantMenuRating2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rating: 4.5"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/restaurantItemReview2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Review: Great taste!"
-            android:textSize="14sp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

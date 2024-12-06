@@ -16,7 +16,7 @@
 
         <!-- First TextView -->
         <TextView
-            android:id="@+id/compareRestaurantNameList"
+            android:id="@+id/selectRestaurantMenuList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Category Name"
@@ -26,21 +26,6 @@
 
         <!-- Second TextView -->
 
-        <TextView
-            android:id="@+id/compareRestaurantMenuList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Description"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray" />
-
-        <RatingBar
-            android:id="@+id/ratingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:isIndicator="true"/>
     </LinearLayout>
 
     <RadioButton

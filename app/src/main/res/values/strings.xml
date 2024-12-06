@@ -3,4 +3,7 @@
     <string name="arrow_button">arrow_button</string>
     <string name="toggle_checklist">Toggle Checklist</string>
     <string name="add_to_checklist">Add to Checklist</string>
+    <string name="here_lies_your_memories_of_your_visited_places">Here lies your memories of your visited places</string>
+    <string name="select">Select Time</string>
+    <string name="select_menu">Select Menu</string>
 </resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top Restaurant Section -->
+    <LinearLayout
+        android:id="@+id/topReviewRestaurant"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomReviewRestaurant"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/border_straight">
+
+        <TextView
+            android:id="@+id/topReviewRestaurantName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Top Restaurant Name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="8dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="People's Reviews"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="3dp" />
+
+        <!-- ViewPager2 for navigating between reviews -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/topReviewsViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@drawable/border_transparent"/>
+
+        <Button
+            android:id="@+id/topReviewOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Itinerary"
+            android:layout_margin="8dp" />
+    </LinearLayout>
+
+    <!-- Bottom Restaurant Section -->
+    <LinearLayout
+        android:id="@+id/bottomReviewRestaurant"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/topReviewRestaurant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/bottomReviewRestaurantName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Bottom Restaurant Name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="8dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="People's Reviews"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="3dp" />
+
+        <!-- ViewPager2 for navigating between reviews -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/bottomReviewsViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@drawable/border_transparent"/>
+
+        <Button
+            android:id="@+id/bottomReviewOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to Itinerary"
+            android:layout_margin="8dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

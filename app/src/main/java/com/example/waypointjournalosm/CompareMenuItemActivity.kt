@@ -1,34 +1,61 @@
 package com.example.waypointjournalosm
 
+import com.example.waypointjournalosm.utils.stringSimilarity
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
+import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 
-
-class CompareMenuItemActivity  : AppCompatActivity() {
+class CompareMenuItemActivity : AppCompatActivity() {
     private val restaurantItem: RestaurantItem by viewModels()
     private lateinit var compareListAdapter: CompareListAdapter
-    private var selectedMenuItem: String? = null
+
+    // Declare views for the layouts
+    private lateinit var dropdownMenu: AutoCompleteTextView
+    private lateinit var thirdLayout: LinearLayout
+    private lateinit var compareButton: Button
+
+    private lateinit var restaurantItemViewModel: RestaurantItem
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var runnable: Runnable? = null
+
+    private var isMenuSelected: Boolean = true // Default to Menu comparison
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.compare_item)
 
+        // Initialize ViewModel
+        restaurantItemViewModel = ViewModelProvider(this).get(RestaurantItem::class.java)
+
+        // Initialize the RecyclerView and adapter
         compareListAdapter = CompareListAdapter(
             onAddClick = { item ->
-                selectedMenuItem?.let { menuItem ->
-                    handleCompare(item, menuItem)
-                } ?: Toast.makeText(this, "No menu item selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Add ${item.name} to List", Toast.LENGTH_SHORT).show()
             },
             onInfoClick = { item ->
+                // Handle info click (optional)
+            },
+            onItemClick = { selectedRestaurant ->
+                // Update bottom layout when a restaurant is selected
             }
         )
 
@@ -36,124 +63,148 @@ class CompareMenuItemActivity  : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = compareListAdapter
 
+        // Observe restaurant list from ViewModel
         restaurantItem.restaurantList.observe(this, Observer { restaurantList ->
             compareListAdapter.submitList(restaurantList)
         })
 
-        val restaurantName = intent.getStringExtra("SELECTED_RESTAURANT_NAME")
-        val restaurantMenu = intent.getStringArrayListExtra("SELECTED_RESTAURANT_MENU")
-        val ingredients1 = intent.getStringArrayListExtra("SELECTED_MENU_INGREDIENTS1")
-        val ingredients2 = intent.getStringArrayListExtra("SELECTED_MENU_INGREDIENTS2")
-        val ingredients3 = intent.getStringArrayListExtra("SELECTED_MENU_INGREDIENTS3")
-        val menuItemRating1 = intent.getDoubleExtra("SELECTED_MENU_RATING1", 0.0)
-        val menuItemRating2 = intent.getDoubleExtra("SELECTED_MENU_RATING2", 0.0)
-        val menuItemRating3 = intent.getDoubleExtra("SELECTED_MENU_RATING3", 0.0)
-        val menuItemReview1 = intent.getStringExtra("SELECTED_MENU_REVIEWS1")
-        val menuItemReview2 = intent.getStringExtra("SELECTED_MENU_REVIEWS2")
-        val menuItemReview3 = intent.getStringExtra("SELECTED_MENU_REVIEWS3")
 
-        val ingredientsTextView = findViewById<TextView>(R.id.restaurantItemIngredients1)
-        val ratingTextView = findViewById<TextView>(R.id.restaurantMenuRating1)
-        val reviewTextView = findViewById<TextView>(R.id.restaurantItemReview1)
 
-        // Populate the top layout
-        findViewById<TextView>(R.id.restaurantName1).text = restaurantName
+        // Initialize dropdown and third layout
+        dropdownMenu = findViewById(R.id.autoing_complete_text)
+        thirdLayout = findViewById(R.id.thirdLinearLayout)
 
-        // Dynamically populate buttons with menu items
-        val button4 = findViewById<Button>(R.id.button4)
-        val button5 = findViewById<Button>(R.id.button5)
-        val button6 = findViewById<Button>(R.id.button6)
+        // Set up the dropdown menu items
+        val options = listOf("Menu", "Review")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options)
+        dropdownMenu.setAdapter(adapter)
 
-        restaurantMenu?.let { menu ->
-            if (menu.isNotEmpty()) {
-                button4.text = menu.getOrNull(0) ?: "Item 1"
-                button5.text = menu.getOrNull(1) ?: "Item 2"
-                button6.text = menu.getOrNull(2) ?: "Item 3"
-            } else {
-                // If the menu is empty, set default text
-                button4.text = "No Item"
-                button5.text = "No Item"
-                button6.text = "No Item"
+        // Add listener for dropdown menu selection
+        dropdownMenu.setOnItemClickListener { _, _, position, _ ->
+            when (options[position]) {
+                "Menu" -> handleMenuSelection()
+                "Review" -> handleReviewSelection()
             }
         }
 
-        // Set up button click listeners to filter the restaurant list
-        val restaurantList = restaurantItem.restaurantList.value ?: emptyList()
+        // Observe restaurant list changes
+        restaurantItemViewModel.restaurantList.observe(this, Observer { restaurantList ->
+            compareListAdapter.submitList(restaurantList)
+        })
+        compareButton = findViewById(R.id.button3)
 
-        val handleButtonClick = { index: Int, menuItem: String ->
-            // Update TextViews
-            selectedMenuItem = menuItem
-            when (index) {
-                0 -> {
-                    ingredientsTextView.text = ("Ingredients: " + ingredients1?.joinToString(", "))
-                    ratingTextView.text = "Rating: $menuItemRating1"
-                    reviewTextView.text = "Reviews: \n$menuItemReview1"
-                }
-                1 -> {
-                    ingredientsTextView.text = ("Ingredients: " + ingredients2?.joinToString(", "))
-                    ratingTextView.text = "Rating: $menuItemRating2"
-                    reviewTextView.text = "Reviews: \n$menuItemReview2"
-                }
-                2 -> {
-                    ingredientsTextView.text = ("Ingredients: " + ingredients3?.joinToString(", "))
-                    ratingTextView.text = "Rating: $menuItemRating3"
-                    reviewTextView.text = "Reviews: \n$menuItemReview3"
-                }
+        // Set up compare button click listener
+        compareButton.setOnClickListener {
+            handleCompareButtonClick()
+        }
+
+        // Get the EditText from the third layout
+        val menuFilterEditText: EditText = findViewById(R.id.editTextText)
+
+        // Set listener for text changes in the EditText
+        menuFilterEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+                // Optionally handle actions before the text is changed (e.g., clear filter when backspacing)
             }
 
-            // Filter and display restaurants serving the selected menu item
-            val filteredList = restaurantList.filter { it.rMenu.contains(menuItem) }
-            compareListAdapter.submitList(filteredList)
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = charSequence.toString()
 
-            if (filteredList.isEmpty()) {
-                Toast.makeText(this, "No restaurants serve $menuItem", Toast.LENGTH_SHORT).show()
+                // Remove any previously scheduled filter task
+                runnable?.let { handler.removeCallbacks(it) }
+
+                // Schedule a new filtering task with a small delay (debounce effect)
+                runnable = Runnable {
+                    compareListAdapter.filterList(query)  // Filter after the debounce delay
+                }
+
+                // Post the task with a debounce delay (e.g., 300ms)
+                handler.postDelayed(runnable!!, 300)
             }
-        }
 
-        button4.setOnClickListener {
-            handleButtonClick(0, button4.text.toString())
-        }
 
-        button5.setOnClickListener {
-            handleButtonClick(1, button5.text.toString())
-        }
-
-        button6.setOnClickListener {
-            handleButtonClick(2, button6.text.toString())
-        }
+            override fun afterTextChanged(editable: Editable?) {
+                // Optional: Handle actions after the text has changed
+            }
+        })
 
     }
 
-    private fun handleCompare(item: RestaurantData, menuItem: String) {
-        val menuIndex = item.rMenu.indexOf(menuItem)
-        if (menuIndex != -1) {
-            val ingredients = when (menuIndex) {
-                0 -> item.ingredients1
-                1 -> item.ingredients2
-                2 -> item.ingredients3
-                else -> emptyList()
-            }
-            val rating = when (menuIndex) {
-                0 -> item.menuItemRating1
-                1 -> item.menuItemRating2
-                2 -> item.menuItemRating3
-                else -> 0.0
-            }
-            val reviews = when (menuIndex) {
-                0 -> item.menuItemReviews1
-                1 -> item.menuItemReviews2
-                2 -> item.menuItemReviews3
-                else -> "No reviews available"
-            }
+    // Function to handle the "Menu" option
+    private fun handleMenuSelection() {
+        // Make third layout visible
+        thirdLayout.visibility = View.VISIBLE
+        isMenuSelected = true
 
-            // Update bottom layout with selected restaurant's data
-            findViewById<TextView>(R.id.restaurantName2).text = item.name
-            findViewById<TextView>(R.id.restaurantMenuItem2).text = menuItem
-            findViewById<TextView>(R.id.restaurantItemIngredients2).text = ingredients.joinToString(", ")
-            findViewById<TextView>(R.id.restaurantMenuRating2).text = "Rating: $rating"
-            findViewById<TextView>(R.id.restaurantItemReview2).text = reviews
+        // Prepare for menu comparison
+        Toast.makeText(this, "Prepare for Menu Comparison", Toast.LENGTH_SHORT).show()
+    }
+
+    // Function to handle the "Review" option
+    private fun handleReviewSelection() {
+        // Make third layout invisible
+        thirdLayout.visibility = View.GONE
+        isMenuSelected = false
+
+        // Prepare for review comparison
+        Toast.makeText(this, "Prepare for Review Comparison", Toast.LENGTH_SHORT).show()
+    }
+    private fun handleCompareButtonClick() {
+        // Check if the user has selected an option from the dropdown menu
+        if (!::dropdownMenu.isInitialized || dropdownMenu.text.isNullOrEmpty()) {
+            Toast.makeText(this, "Please select an option (Menu or Review) first.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Get the selected restaurants from the adapter
+        val selectedRestaurants = compareListAdapter.getSelectedRestaurants()
+
+        if (selectedRestaurants.size != 2) {
+            Toast.makeText(this, "Please select exactly 2 restaurants for comparison.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val restaurant1 = selectedRestaurants[0]
+        val restaurant2 = selectedRestaurants[1]
+
+
+        // If "Menu" is selected, start MenuComparisonActivity
+        if (isMenuSelected) {
+            // Check menu similarity
+            if (!isMenuSimilar(restaurant1.rMenu, restaurant2.rMenu)) {
+                Toast.makeText(this, "The menus are not similar enough for comparison.", Toast.LENGTH_SHORT).show()
+                return
+            }
+            // Navigate to MenuComparisonActivity with the selected restaurants
+            val intent = Intent(this, MenuComparisonActivity::class.java).apply {
+                putExtra("restaurant1", restaurant1.name) // Pass restaurant name
+                putExtra("menu1", restaurant1.rMenu)     // Pass menu details
+                putExtra("ingredients1", restaurant1.ingredients1.toTypedArray()) // Pass ingredients
+                putExtra("price1", restaurant1.menuItemPrice) // Pass price
+
+                putExtra("restaurant2", restaurant2.name)
+                putExtra("menu2", restaurant2.rMenu)
+                putExtra("ingredients2", restaurant2.ingredients1.toTypedArray())
+                putExtra("price2", restaurant2.menuItemPrice)
+            }
+            startActivity(intent)
         } else {
-            Toast.makeText(this, "Selected menu item not found in this restaurant", Toast.LENGTH_SHORT).show()
+            // If "Review" is selected, start ReviewComparisonActivity
+            val intent = Intent(this, ReviewComparisonActivity::class.java).apply {
+                putExtra("restaurant1", restaurant1.name)
+                putExtra("review1", restaurant1.restaurantReviews1)
+                putExtra("review2", restaurant1.restaurantReviews)
+
+                putExtra("restaurant2", restaurant2.name)
+                putExtra("review3", restaurant2.restaurantReviews1)
+                putExtra("review4", restaurant2.restaurantReviews)
+            }
+            startActivity(intent)
         }
     }
+
+    private fun isMenuSimilar(menu1: String, menu2: String): Boolean {
+        return stringSimilarity(menu1, menu2) >= 55 // Or whatever threshold you want
+    }
+
 }

@@ -4,14 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/border"
+    android:layout_marginBottom="2dp"
+    android:layout_marginTop="2dp">
 
     <TextView
         android:id="@+id/restaurantNameChecklist"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Restaurant Name" />
+        android:background="@drawable/border"
+        android:text="Restaurant Name"
+        android:padding="7dp"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="6dp"
+        android:text="TextView" />
 
     <CheckBox
         android:id="@+id/checkbox"
@@ -19,4 +32,5 @@
         android:layout_height="wrap_content"
         android:minWidth="48dp"
         android:minHeight="48dp" />
+
 </LinearLayout>

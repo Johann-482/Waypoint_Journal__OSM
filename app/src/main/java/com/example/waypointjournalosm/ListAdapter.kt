@@ -11,17 +11,33 @@ class ListAdapter(
 ) : RecyclerView.Adapter<ListAdapter.RestaurantViewHolder>() {
 
     private var items: List<RestaurantData> = emptyList()
+    private var filteredItems: List<RestaurantData> = emptyList()
 
     fun submitList(data: List<RestaurantData>) {
         items = data
+        filteredItems = data  // Initially, show all items
         notifyDataSetChanged()
     }
+
+    // Filter the list based on the query
+    fun filterList(query: String) {
+        filteredItems = if (query.isEmpty()) {
+            items // Show all items if query is empty
+        } else {
+            items.filter { restaurant ->
+                restaurant.rMenu.contains(query, ignoreCase = true)
+            }
+        }
+
+        // Notify RecyclerView to update with the filtered items
+        notifyDataSetChanged()
+    }
+
     inner class RestaurantViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(restaurantItem: RestaurantData) {
             binding.restaurantNameList.text = restaurantItem.name
-            binding.restaurantMenuList.text = restaurantItem.rMenu.joinToString(", ")
+            binding.restaurantMenuList.text = restaurantItem.rMenu
             binding.addToListButton.setOnClickListener { onAddClick(restaurantItem) }
-            binding.infoButton.setOnClickListener { onInfoClick(restaurantItem) }
         }
     }
 
@@ -31,8 +47,11 @@ class ListAdapter(
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-        holder.bind(items[position])
+        val restaurantItem = filteredItems[position] // Bind from filteredItems only
+        holder.bind(restaurantItem)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int {
+        return filteredItems.size // Show the size of the filtered list
+    }
 }
