@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "601193443162",
+    "project_id": "waypoint-journal-806a7",
+    "storage_bucket": "waypoint-journal-806a7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601193443162:android:43dbf77dfa042185814d63",
+        "android_client_info": {
+          "package_name": "com.example.waypointjournalosm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdfyrQi62StAU_o951jtJ0IZlaAQemf8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
